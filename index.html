@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Up, Up, Ever Up!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --snow: #f5f2ee;
+      --ice: #dce8ef;
+      --sky: #5b8fa8;
+      --deep: #1a3545;
+      --peak: #2c5f7a;
+      --gold: #c8933a;
+      --mist: #8faebf;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--snow); color: var(--deep); font-family: 'Lato', sans-serif; font-weight: 300; overflow-x: hidden; }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: #111;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 4vw; height: 52px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer;
+    }
+    .nav-links { display: flex; gap: clamp(1rem, 3vw, 2.5rem); }
+    .nav-links a {
+      color: #aaa; text-decoration: none;
+      font-size: 0.78rem; letter-spacing: 0.12em;
+      text-transform: uppercase; font-weight: 700;
+      transition: color 0.2s; cursor: pointer;
+      padding: 4px 0; border-bottom: 2px solid transparent;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-links a.active { color: #fff; border-bottom-color: var(--gold); }
+
+    /* HERO */
+    .hero-banner {
+      position: relative; height: 42vh; min-height: 260px;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .hero-banner img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center 40%; filter: brightness(0.55);
+    }
+    .hero-inner { position: relative; z-index: 1; text-align: center; }
+    .hero-inner h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      font-weight: 900; color: #fff;
+      text-shadow: 0 4px 30px rgba(0,0,0,0.5); line-height: 1.1;
+    }
+    .hero-inner .sub {
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.8); margin-top: 0.6rem; font-style: italic;
+    }
+
+    .quote-band {
+      background: #1a3d56; padding: 1.6rem 6vw; text-align: center;
+    }
+    .quote-band p {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(0.95rem, 2vw, 1.2rem);
+      font-style: italic; color: #fff;
+      max-width: 900px; margin: 0 auto; line-height: 1.6;
+    }
+
+    .content { max-width: 1100px; margin: 0 auto; padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 6vw, 5rem); }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 700; color: var(--deep); margin-bottom: 1.2rem;
+    }
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 700; color: var(--deep); margin-bottom: 0.8rem;
+    }
+    p {
+      font-size: 1.02rem; line-height: 1.85;
+      color: #3a4f5c; margin-bottom: 1.1rem;
+    }
+
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem 4rem; align-items: start; margin-bottom: 3rem;
+    }
+    .two-col img { width: 100%; border-radius: 3px; }
+    @media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
+
+    hr.div { border: none; height: 2px; background: linear-gradient(90deg, var(--gold), var(--sky), transparent); margin: 2.5rem 0; }
+
+    .facts-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2rem; margin: 2rem 0; text-align: center;
+    }
+    .fact-card img { width: 100%; border-radius: 3px; margin-top: 0.8rem; }
+    @media (max-width: 680px) { .facts-grid { grid-template-columns: 1fr; } }
+
+    .ratings-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2rem; margin: 2rem 0; text-align: center;
+    }
+    .rating-card { border-top: 3px solid var(--gold); padding-top: 1rem; }
+    .rating-card h3 { font-size: 1.2rem; margin-bottom: 0.4rem; }
+    .rating-card .score { font-size: 1.4rem; font-weight: 700; color: var(--gold); margin-bottom: 0.5rem; }
+    .rating-card p { font-size: 0.9rem; max-width: 100%; }
+    @media (max-width: 680px) { .ratings-grid { grid-template-columns: 1fr; } }
+
+    .stars { font-size: 2.5rem; letter-spacing: 4px; margin: 1rem 0; }
+    .stars .filled { color: var(--gold); }
+    .stars .empty { color: #bbb; }
+
+    .next-btn-wrap { text-align: center; margin: 3rem 0 1rem; }
+    .next-btn {
+      background: var(--deep); color: #fff;
+      padding: 0.8rem 2.5rem; border-radius: 3px;
+      font-size: 0.85rem; letter-spacing: 0.12em;
+      text-transform: uppercase; font-weight: 700;
+      border: none; cursor: pointer; transition: background 0.2s;
+    }
+    .next-btn:hover { background: var(--peak); }
+
+    footer {
+      background: #111; color: #666;
+      padding: 2.5rem 2rem;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem; font-size: 0.85rem;
+    }
+    footer h4 { color: var(--gold); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.8rem; }
+    footer p { color: #888; font-size: 0.85rem; line-height: 1.7; max-width: 100%; margin: 0 0 0.3rem; }
+    footer address { font-style: normal; color: #888; line-height: 1.8; font-size: 0.85rem; }
+    .footer-icons { display: flex; gap: 1rem; margin-top: 0.8rem; font-size: 1.1rem; }
+    .footer-icons a { color: #555; text-decoration: none; transition: color 0.2s; }
+    .footer-icons a:hover { color: var(--gold); }
+    @media (max-width: 680px) { footer { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand" onclick="showPage('synopsis')">Up, Up, Ever, Up!</div>
+  <div class="nav-links">
+    <a onclick="showPage('synopsis')" id="nav-synopsis" class="active">Synopsis</a>
+    <a onclick="showPage('theme')" id="nav-theme">Theme</a>
+    <a onclick="showPage('connections')" id="nav-connections">Connections</a>
+    <a onclick="showPage('thoughts')" id="nav-thoughts">Thoughts</a>
+  </div>
+</nav>
+
+<!-- ══════════ SYNOPSIS ══════════ -->
+<div class="page active" id="page-synopsis">
+  <div class="hero-banner">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg/1280px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg" alt="Mount Everest"/>
+    <div class="hero-inner">
+      <h1>Up, Up, Ever Up!</h1>
+      <p class="sub">Written By: Anita Yasuda</p>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="two-col">
+      <div>
+        <h2>Who is Anita Yasuda</h2>
+        <p>Anita Yasuda was born in 1968 and is the author of the book Up, Up, Ever Up! Junko Tabei: A Life In The Mountains, illustrated by Yuko Shimizu. She has also written many other books for young readers, including Diwali: A Festival Of Joy, illustrated by Darshika Varma, Bollywood Beat, illustrated by Devika Oza, and My Thali Is A Song.</p>
+        <p>Anita earned her honours degree in East Asian and South Asian studies at the University of Toronto, Victoria College, and later received her Montessori and Early Childhood qualifications at the AMI Institute in Vancouver, British Columbia.</p>
+        <p>After graduating, she worked many different jobs, from preschool teacher to sales clerk, caterer, firefighter for one day, freelance magazine writer, and author of books for educational publishers.</p>
+        <p>Today, Anita is a member of CANSCAIP, the Writers Union of Canada, and SCBWI, and she serves as a co-host of SCBWI Canada-East BIPOC Talk.</p>
+      </div>
+      <div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Anita_Yasuda_%28author%29.jpg/800px-Anita_Yasuda_%28author%29.jpg" alt="Anita Yasuda" onerror="this.style.background='#dce8ef';this.style.minHeight='300px'"/>
+      </div>
+    </div>
+
+    <hr class="div"/>
+
+    <h2>Synopsis</h2>
+    <p>The book <em>Up Up Ever Up</em> starts with the main character, Junko Tabei, under a hill surrounded by vibrant sakura trees and cold grass, listening to stories about colossal mountains. Junko developed the urge to climb. As soon as she turned 10, Junko and her friends climbed Mount Chausu. Afterwards, when Junko left her home in Miharu and settled in Tokyo, where she felt like a fish out of water, she longed for the mountains. All the mountain climbing clubs she found said "No Women Allowed," but she eventually found one that said yes. In the weeks that followed, Junko would climb every chance she got and, in doing so, eventually found someone just like her, so they got married. Junko and her partner set their sights on the greatest challenge of their lives, climbing Everest, a summit no woman had ever accomplished. Junko began recycling old scraps to construct climbing gear specifically for women, as equipment at the time was only for men. In the years that ensued, Junko finally completed her preparation for the Everest climb with her team, and so they landed in Nepal and began their hike with many mothers and young girls watching. As Everest loomed above them, unforgiving and vast, an avalanche came down, causing devastating damage to their equipment and the only remaining oxygen for Junko and her guide, Ang Tsering Sherpa. Nearly two weeks after the disaster, they finally arrived at the last camp before the summit. Junko began the ascent for the final stretch, "<em>Up Up and Ever Up,</em>" with the last of her strength. Standing at the pinnacle of the world, she had accomplished what no woman had ever, conquered Everest.</p>
+
+    <hr class="div"/>
+
+    <div class="two-col">
+      <div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Junko_Tabei_1992.jpg/800px-Junko_Tabei_1992.jpg" alt="Junko Tabei on Everest"/>
+      </div>
+      <div>
+        <h2>About Junko Tabei</h2>
+        <p>Junko was born on September 22, 1939, in Miharu, Fukushima, Japan. She was a Japanese mountaineer, author, and teacher. In Miharu, she was the fifth daughter of seven children and was considered a frail child. At the age of 10, is when she first started climbing on a class trip to Mount Nasu. Unfortunately, Junko's family was too poor to fund her passion for climbing.</p>
+        <p>Tabei studied English and American literature at Showa Women's University and married fellow mountaineer Masanobu Tabei at age 27. They had two children, a daughter and a son. In 1969, Junko founded the Joshi-Tohan Club, a women-only mountaineering club.</p>
+        <p>To fund her climbing, she taught piano lessons and sewed her own gear from scratch. On May 16, 1975, alongside her Sherpa guide Ang Tsering, she became the first woman to summit Everest after surviving an avalanche during the expedition, and later became the first woman to complete the Seven Summits. Later in her life, she organized clean-up expeditions on Everest and led Mount Fuji climbs for youth affected by the 2011 earthquake.</p>
+      </div>
+    </div>
+
+    <hr class="div"/>
+
+    <h2>Facts about Mount Everest</h2>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <h3>Everest's Massive Peak</h3>
+        <p>Mount Everest is the world's highest peak at 8,848.86 meters (29,031.7 feet) above sea level.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg/800px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg" alt="Everest"/>
+      </div>
+      <div class="fact-card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg/1280px-Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg" alt="Everest aerial" style="margin-bottom:0.8rem"/>
+        <h3>Names in Different Cultures</h3>
+        <p>Known as Sagarmatha in Nepal ("head of the great blue sky") and Chomolungma in Tibet ("Mother Goddess of the World"), it was named "Everest" in 1865 after Sir George Everest.</p>
+      </div>
+      <div class="fact-card">
+        <h3>It is still Growing</h3>
+        <p>Due to the collision of the Indian and Eurasian tectonic plates, Everest grows higher by about a quarter of an inch (0.1 inches) every year.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="next-btn-wrap">
+    <button class="next-btn" onclick="showPage('theme')">Next Page →</button>
+  </div>
+  <footer>
+    <div><h4>Our mission</h4><p>Our mission is to spread information to everybody in Ms. Eisses' class about <em>Up, Up, Ever Up</em>. To do this, we will continue to work on this project and continuously add more and more information to this book.</p></div>
+    <div><h4>Contact us</h4><address>Codrington Public School<br>217 Codrington St,<br>Barrie,<br>Ontario L4M 1S4,<br>705-728-3084</address></div>
+    <div><h4>Visit us</h4><div class="footer-icons"><a href="https://twitter.com">𝕏</a><a href="https://facebook.com">f</a><a href="https://instagram.com">◻</a><a href="mailto:ozia7740@scdsb.on.ca">✉</a></div><p style="margin-top:0.8rem">Son Im Crine</p><p>Blacked out like a phantom</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ THEME ══════════ -->
+<div class="page" id="page-theme">
+  <div class="hero-banner">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg/1280px-Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg" alt="Everest"/>
+    <div class="hero-inner"><h1>Overall Theme</h1></div>
+  </div>
+
+  <div class="quote-band">
+    <p>"Technique and ability alone do not get you to the top; it is the willpower that is the most important. This willpower you cannot buy with money or be given by others... it rises from your heart." - Junko Tabei</p>
+  </div>
+
+  <div class="content">
+    <h2>What's the Theme</h2>
+    <p>One of the major themes I notice in <em>Up, Up, Ever Up</em> is the perseverance of somebody who never gives up. Junko is a prime example of this, as she has been rejected from climbing clubs, financial droughts, sexism, and even a life-threatening avalanche, yet she has never seen these setbacks as a loss but a reason to keep persevering. The book explores concepts such as gender barriers and shows how women in Junko's time were constantly told that climbing and ambition were not for them. Belonging is another theme I found important, since Junko never feels at home in the city but finds peace and purpose on the mountain. These themes together show a woman who refused to let the world decide what she could and could not do.</p>
+
+    <hr class="div"/>
+
+    <div class="two-col">
+      <div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Iceberg_in_the_Arctic_with_its_underside_exposed.jpg/1280px-Iceberg_in_the_Arctic_with_its_underside_exposed.jpg" alt="Iceberg"/>
+      </div>
+      <div>
+        <h2>Symbolism</h2>
+        <p>In my opinion, the mountains in this book mean far more than just a physical challenge. They represent every barrier and obstacle Junko had to push through, and every summit she reaches feels like another wall she overcame. The sakura trees at the beginning of the story represent her home, and the childhood wonder that started it all, which makes her reaching the top of Everest feel even more powerful.</p>
+      </div>
+    </div>
+
+    <hr class="div"/>
+
+    <h2>Historical Context</h2>
+    <p>What stood out to me was how out of the ordinary Junko's Everest summit in 1975 really was. Women at the time were shut out of professional mountaineering, told to stay at home, and dismissed by sponsors and clubs. Junko's achievement was not just a win for her, but a message to the entire world that women belonged everywhere, even at the top of the highest mountain on Earth.</p>
+  </div>
+
+  <div class="next-btn-wrap">
+    <button class="next-btn" onclick="showPage('connections')">Next Page →</button>
+  </div>
+  <footer>
+    <div><h4>Our mission</h4><p>Our mission is to spread information to everybody in Ms. Eisses' class about <em>Up, Up, Ever Up</em>. To do this, we will continue to work on this project and continuously add more and more information to this book.</p></div>
+    <div><h4>Contact us</h4><address>Codrington Public School<br>217 Codrington St,<br>Barrie,<br>Ontario L4M 1S4,<br>705-728-3084</address></div>
+    <div><h4>Visit us</h4><div class="footer-icons"><a href="https://twitter.com">𝕏</a><a href="https://facebook.com">f</a><a href="https://instagram.com">◻</a><a href="mailto:ozia7740@scdsb.on.ca">✉</a></div><p style="margin-top:0.8rem">Son Im Crine</p><p>Blacked out like a phantom</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ CONNECTIONS ══════════ -->
+<div class="page" id="page-connections">
+  <div class="hero-banner" style="background:#050a12;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Milky_Way_Night_Sky_Black_Rock_Desert_USAF.jpg/1280px-Milky_Way_Night_Sky_Black_Rock_Desert_USAF.jpg" alt="Night sky"/>
+    <div class="hero-inner"><h1>Connections</h1></div>
+  </div>
+
+  <div class="content">
+    <h2>The Climber</h2>
+    <p style="color:#666;font-style:italic;margin-bottom:2rem">(Image from your Google Site — add your own image here)</p>
+
+    <hr class="div"/>
+
+    <h2>How it Connects</h2>
+    <p><em>(This section is still being written — check back soon!)</em></p>
+
+    <hr class="div"/>
+
+    <div class="two-col">
+      <div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Sisyphus_by_von_Stuck.jpg/800px-Sisyphus_by_von_Stuck.jpg" alt="Sisyphus"/>
+      </div>
+      <div>
+        <h2>The Tale of Sisyphus</h2>
+        <p>Up, Up, Ever Up connects to the tale of Sisyphus in an interesting way. Like Sisyphus, Junko faced endless obstacles that pushed her back down, from being rejected by climbing clubs, to surviving an avalanche, to being told women should be raising children instead of climbing. But unlike Sisyphus, whose struggle is eternal and meaningless, Junko's perseverance had purpose and eventually led her to the summit. Where Sisyphus is a symbol of futile struggle, Junko transforms that same relentless pushing forward into triumph.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="next-btn-wrap">
+    <button class="next-btn" onclick="showPage('thoughts')">Next Page →</button>
+  </div>
+  <footer>
+    <div><h4>Our mission</h4><p>Our mission is to spread information to everybody in Ms. Eisses' class about <em>Up, Up, Ever Up</em>. To do this, we will continue to work on this project and continuously add more and more information to this book.</p></div>
+    <div><h4>Contact us</h4><address>Codrington Public School<br>217 Codrington St,<br>Barrie,<br>Ontario L4M 1S4,<br>705-728-3084</address></div>
+    <div><h4>Visit us</h4><div class="footer-icons"><a href="https://twitter.com">𝕏</a><a href="https://facebook.com">f</a><a href="https://instagram.com">◻</a><a href="mailto:ozia7740@scdsb.on.ca">✉</a></div><p style="margin-top:0.8rem">Son Im Crine</p><p>Blacked out like a phantom</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ THOUGHTS ══════════ -->
+<div class="page" id="page-thoughts">
+  <div class="hero-banner">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/The_Thinker%2C_Rodin_%281880%29.jpg/800px-The_Thinker%2C_Rodin_%281880%29.jpg" alt="The Thinker"/>
+    <div class="hero-inner"><h1>Thoughts</h1></div>
+  </div>
+
+  <div class="content">
+    <div class="two-col">
+      <div>
+        <h2>Reaction (Informal-ish)</h2>
+        <p>When I first started reading the book, I immediately noticed the eye-catching illustrations and became heavily intrigued by what came next. Honestly, <em>Up, Up, Ever Up,</em> was my chosen TTT from when I first saw it. The reason is that I am facinated in asian culture and themes associated with it (asian culture), such as anime, manga, food, games, and much more.</p>
+        <p>Everything about this book was amazing to the very minute detail, with the only downside being its length. But other than that, the most intriguing details were the illustrations (mountains and sakura trees, for example), the depth in the story, and the impact of the deeply rooted sexism in history shown throughout the text.</p>
+      </div>
+      <div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Junko_Tabei_and_Ang_Tsering_Sherpa_summit_of_Everest.jpg/800px-Junko_Tabei_and_Ang_Tsering_Sherpa_summit_of_Everest.jpg" alt="Expedition" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Junko_Tabei_1992.jpg/800px-Junko_Tabei_1992.jpg'"/>
+      </div>
+    </div>
+
+    <hr class="div"/>
+
+    <h2>Ratings from Classmates</h2>
+    <div class="ratings-grid">
+      <div class="rating-card">
+        <h3>Amirhossein</h3>
+        <div class="score">10/10</div>
+        <p><strong>Thoughts:</strong> The illustrations were amazing, and the story was very engaging. The book also made me cry tears of joy.</p>
+      </div>
+      <div class="rating-card">
+        <h3>Hayes</h3>
+        <div class="score">6.5/10</div>
+        <p><strong>Thoughts:</strong> The illustrations were good, and the story was interesting. But I am not that interested in the book's main idea.</p>
+      </div>
+      <div class="rating-card">
+        <h3>Jonathon</h3>
+        <div class="score">7/10</div>
+        <p><strong>Thoughts:</strong> Because I really like the idea of how Junko persevered for womans apparence in male-dominated activities.</p>
+      </div>
+    </div>
+
+    <hr class="div"/>
+
+    <div class="two-col">
+      <div>
+        <p style="font-size:1.4rem;font-weight:700;color:#333;">"it's just so peak"</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Gintoki_crying.jpg/800px-Gintoki_crying.jpg" alt="it's just so peak" onerror="this.style.display='none'"/>
+      </div>
+      <div>
+        <h2>Final Rating</h2>
+        <div class="stars">
+          <span class="filled">★</span><span class="filled">★</span><span class="filled">★</span><span class="filled">★</span><span class="empty">★</span>
+        </div>
+        <p>4 out of 5 stars — an inspiring, beautifully illustrated book that tells the story of a true pioneer.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div><h4>Our mission</h4><p>Our mission is to spread information to everybody in Ms. Eisses' class about <em>Up, Up, Ever Up</em>. To do this, we will continue to work on this project and continuously add more and more information to this book.</p></div>
+    <div><h4>Contact us</h4><address>Codrington Public School<br>217 Codrington St,<br>Barrie,<br>Ontario L4M 1S4,<br>705-728-3084</address></div>
+    <div><h4>Visit us</h4><div class="footer-icons"><a href="https://twitter.com">𝕏</a><a href="https://facebook.com">f</a><a href="https://instagram.com">◻</a><a href="mailto:ozia7740@scdsb.on.ca">✉</a></div><p style="margin-top:0.8rem">Son Im Crine</p><p>Blacked out like a phantom</p></div>
+  </footer>
+</div>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.getElementById('nav-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
